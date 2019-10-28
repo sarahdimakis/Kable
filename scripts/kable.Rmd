@@ -1,0 +1,134 @@
+---
+title: "Kable demo"
+author: "Sarah Dimakis"
+date: "October 23, 2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rio)
+library(here)
+
+data <- import(here("data", "mturk_oct9.csv"))
+```
+
+```{r, warning = FALSE}
+library(knitr)
+library(kableExtra)
+```
+
+Kable is a function from the knitr package that makes nice tables. Click on this [link](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html) for the guide I learned how to use it from.
+
+```{r}
+(table <- data %>%
+  filter(Political_affiliation == "Democratic Party" |
+           Political_affiliation == "Republican Party" |
+           Political_affiliation == "No party") %>% 
+  group_by(Political_affiliation, Policy_politics) %>%
+  summarize(mean_vote = mean(Vote_policy),
+            mean_solve_problem = mean(Solve_problem),
+            mean_reduce_problem = mean(Reduce_problem),
+            mean_good_solution = mean(Good_solution),
+            mean_reasonable_cost = mean(Reasonable_cost),
+            mean_politically_possible = mean(Politically_possible),
+            mean_morally_justifiable = mean(Morally_justifiable))) 
+```
+
+```{r}
+(table2 <- table %>% 
+  kable(digits = 2,
+               col.names = c("Political affiliation", "Policy affiliation",
+                             "Vote policy", "Solve problem",
+                             "Reduce problem", "Good solution",
+                             "Reasonable cost", "Politically possible", 
+                             "Morally justifiable"),
+               format = "html"))
+
+```
+
+
+```{r}
+table2 %>% 
+  kable_styling(bootstrap_options = "striped", 
+                full_width = FALSE,
+                position = "center")
+
+```
+
+
+```{r}
+table2 %>% 
+  kable_styling(bootstrap_options = c("hover", "condensed"), 
+                full_width = FALSE,
+                position = "center",
+                font_size = 15) %>% 
+  row_spec(0, angle = -45)
+
+```
+
+```{r}
+table2 %>% 
+  kable_styling(bootstrap_options = c("hover", "condensed"), 
+                full_width = FALSE,
+                position = "center",
+                font_size = 15) %>% 
+row_spec(4, bold = T, background = "yellow")
+```
+
+
+```{r}
+table2 %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                full_width = FALSE,
+                position = "center",
+                font_size = 15) %>% 
+scroll_box(width = "500px", height = "200px")
+
+```
+
+
+```{r}
+data %>%
+  filter(Political_affiliation == "Democratic Party" |
+           Political_affiliation == "Republican Party" |
+           Political_affiliation == "No party") %>% 
+  group_by(Political_affiliation, Policy_politics) %>%
+  summarize(mean_vote = mean(Vote_policy),
+            mean_solve_problem = mean(Solve_problem),
+            mean_reduce_problem = mean(Reduce_problem)) %>% 
+  kable(digits = 2,
+               col.names = c("Political affiliation", "Policy affiliation",
+                             "Vote policy", "Solve problem",
+                             "Reduce problem"),
+               format = "html") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                full_width = FALSE,
+                position = "center",
+                font_size = 15)
+
+
+```
+
+```{r, echo = FALSE}
+data %>%
+  filter(Political_affiliation == "Democratic Party" |
+           Political_affiliation == "Republican Party" |
+           Political_affiliation == "No party") %>% 
+  group_by(Political_affiliation, Policy_politics) %>%
+  summarize(mean_vote = mean(Vote_policy),
+            mean_solve_problem = mean(Solve_problem),
+            mean_reduce_problem = mean(Reduce_problem)) %>% 
+  kable(digits = 2,
+               col.names = c("Political affiliation", "Policy affiliation",
+                             "Vote policy", "Solve problem",
+                             "Reduce problem"),
+               format = "html") %>% 
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                font_size = 15)
+
+```
+
